@@ -1,521 +1,260 @@
-<template>
-  <div class="weather-container">
-    <div class="weather-header-border">
-      <div class="weather-header">
-        <img
-          class="wall-clock-img"
-          src="/img/wall_clock.png"
-          weight="15"
-          height="15"
-        />&nbsp;시간별 일기예보
-      </div>
-      <label class="left-scroll-label" for="leftMove">
-        <img
-          class="left-scroll-img"
-          src="/img/left-scroll.png"
-          width="17"
-          height="30"
-        />
-      </label>
-      <button class="leftMove" id="leftMove" @click="leftMove"></button>
-
-      <label class="right-scroll-label" for="rightMove">
-        <img
-          class="right-scroll-img"
-          src="/img/right-scroll.png"
-          width="17"
-          height="30"
-        />
-      </label>
-      <button class="rightMove" id="rightMove" @click="rightMove"></button>
-    </div>
-
-    <div class="divider"></div>
-    <div class="weather-body-border">
-      <div v-for="index in arr" :key="index" class="weather-body">
-        <div
-          v-if="
-            weather?.data?.response?.body?.items?.item[index - 60]?.category ===
-              'TMP' ||
-            weather?.data?.response?.body?.items?.item[index - 60]?.category ===
-              'SKY'
-          "
-        >
-          <div
-            v-if="
-              weather?.data?.response?.body?.items?.item[index - 60]
-                ?.category === 'TMP'
-            "
-            class="time-font"
-          >
-            {{
-              formatTime(
-                weather?.data?.response?.body?.items?.item[index - 60]?.fcstTime
-              )
-            }}
-          </div>
-          <br />
-          <!-- 날씨 이미지 선택, 날씨 emit -->
-          <div
-            v-if="
-              weather?.data?.response?.body?.items?.item[index - 60]
-                ?.category === 'SKY'
-            "
-            class="weather-img"
-          >
-            <div
-              v-if="
-                // index - 58은 POP
-                weather?.data?.response?.body?.items?.item[index - 58]
-                  ?.fcstValue != 0
-              "
-            >
-              <img src="/img/rainy.png" width="23" height="21" />
-              <div class="probability-font">
-                {{
-                  weather?.data?.response?.body?.items?.item[index - 58]
-                    ?.fcstValue
-                }}%
-                <div
-                  v-if="
-                    weather?.data?.response?.body?.items?.item[index - 56]
-                      ?.fcstValue !== '강수없음' &&
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstTime == currentHour
-                  "
-                >
-                  {{ emitWeather(2) }}
-                </div>
-                <div
-                  v-else-if="
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstTime == currentHour
-                  "
-                >
-                  {{
-                    emitWeather(
-                      weather?.data?.response?.body?.items?.item[index - 60]
-                        ?.fcstValue
-                    )
-                  }}
-                </div>
-              </div>
-            </div>
-            <div
-              v-else-if="
-                weather?.data?.response?.body?.items?.item[index - 60]
-                  ?.fcstValue == 1
-              "
-            >
-              <div
-                class="moon-img"
-                v-if="
-                  weather?.data?.response?.body?.items?.item[index - 60]
-                    ?.fcstTime > 1700 ||
-                  weather?.data?.response?.body?.items?.item[index - 60]
-                    ?.fcstTime < 600
-                "
-              >
-                <img src="/img/moon.png" width="15" height="17" />
-                <div
-                  v-if="
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstValue == 4 &&
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstTime == currentHour
-                  "
-                >
-                  {{ emitWeather(6) }}
-                </div>
-                <div
-                  v-else-if="
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstTime == currentHour
-                  "
-                >
-                  {{ emitWeather(5) }}
-                </div>
-              </div>
-              <div v-else class="sunny-img">
-                <img src="/img/sunny.png" width="20" height="20" />
-                <div
-                  v-if="
-                    formatTime(
-                      weather?.data?.response?.body?.items?.item[index - 60]
-                        ?.fcstTime
-                    ) === '지금'
-                  "
-                >
-                  {{
-                    emitWeather(
-                      weather?.data?.response?.body?.items?.item[index - 60]
-                        ?.fcstValue
-                    )
-                  }}
-                </div>
-              </div>
-            </div>
-            <div
-              v-else-if="
-                weather?.data?.response?.body?.items?.item[index - 60]
-                  ?.fcstValue == 3
-              "
-            >
-              <img src="/img/cloudy.png" width="36" height="26" />
-              <div
-                v-if="
-                  weather?.data?.response?.body?.items?.item[index - 60]
-                    ?.fcstTime == currentHour
-                "
-              >
-                {{
-                  emitWeather(
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstValue
-                  )
-                }}
-              </div>
-            </div>
-            <div
-              v-else-if="
-                weather?.data?.response?.body?.items?.item[index - 60]
-                  ?.fcstValue == 4
-              "
-            >
-              <img src="/img/overcast.png" width="36" height="26" />
-              <div
-                v-if="
-                  weather?.data?.response?.body?.items?.item[index - 60]
-                    ?.fcstTime == currentHour
-                "
-              >
-                {{
-                  emitWeather(
-                    weather?.data?.response?.body?.items?.item[index - 60]
-                      ?.fcstValue
-                  )
-                }}
-              </div>
-            </div>
-          </div>
-
-          <br />
-          <!-- 시간별 기온 -->
-          <div
-            v-if="
-              weather?.data?.response?.body?.items?.item[index - 60]
-                ?.category === 'TMP'
-            "
-          >
-            <div class="temperature-font">
-              {{
-                weather?.data?.response?.body?.items?.item[index - 60]
-                  ?.fcstValue
-              }}°
-            </div>
-
-            <div
-              v-if="
-                weather?.data?.response?.body?.items?.item[index - 60]
-                  ?.fcstTime == currentHour
-              "
-            >
-              {{
-                emitTmp(
-                  weather?.data?.response?.body?.items?.item[index - 60]
-                    ?.fcstValue
-                )
-              }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- <template>
+  <div class="asd" @click="updateWidth()" :ref="getWidth()"></div>
 </template>
 
 <script setup>
-import { ref, onMounted, defineEmits } from "vue";
-import axios from "axios";
-import qs from "qs";
+let asdWidth = 0;
+let getRef = {};
 
-const leftMove = () => {
-  document
-    .querySelector(".weather-body-border")
-    .scrollTo({ left: 0, behavior: "smooth" });
-};
-const rightMove = () => {
-  document
-    .querySelector(".weather-body-border")
-    .scrollTo({ left: 10000, behavior: "smooth" });
-};
-const emit = defineEmits(["currentWeatherValue", "currentTemperatureValue"]);
-const emitWeather = (index) => {
-  emit("currentWeatherValue", index);
+const updateWidth = () => {
+  const asdElement = getRef;
+  asdWidth = asdElement.offsetWidth;
+  console.log(getRef);
+  console.log(asdWidth);
 };
 
-const emitTmp = (index) => {
-  emit("currentTemperatureValue", index);
+const getWidth = () => {
+  return (el) => {
+    getRef = el;
+    console.log(el);
+  };
 };
-const date = new Date();
-const getHour = (24 - date.getHours() + 1) * 12;
-const arr = new Array(getHour);
-const currentHour = date.getHours() * 100;
-var i;
-var j = 0;
-
-for (i = 288 - getHour; i < 288; i++) {
-  arr[j] = i;
-  j++;
-}
-
-const formatTime = (time) => {
-  //time은 시간을 1600 처럼 표현 date.getHours()은 16처럼 표현하기 때문에 * 100
-
-  if (time == date.getHours() * 100) {
-    return "지금";
-  } else if (time < 1200 && time > 0) {
-    return "오전" + time / 100 + "시";
-  } else if (time == 0 || time == 1200) {
-    return "오후 12시";
-  } else {
-    return "오후" + (time - 1200) / 100 + "시";
-  }
-};
-
-const api_key =
-  "8IIlgnCcJu4CZutrxEKuNB0HgYB/RMDab5SZqpKl5lnn8Xary99mNeuMcxZZOUWlQ4o1RCbAwGEoPTCHdGNRTw==";
-const url_base =
-  "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-const pageNo = ref("1");
-const numOfRows = ref("229");
-const dataType = ref("JSON");
-//날짜를 받아서 base_date에 넣기
-const get_date = ref(
-  JSON.stringify(`${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`)
-);
-const base_date = ref();
-
-if (date.getDate() / 10 < 1) {
-  base_date.value =
-    get_date.value[1] +
-    get_date.value[2] +
-    get_date.value[3] +
-    get_date.value[4] +
-    get_date.value[5] +
-    get_date.value[6] +
-    "0" +
-    get_date.value[7];
-} else {
-  base_date.value =
-    get_date.value[1] +
-    get_date.value[2] +
-    get_date.value[3] +
-    get_date.value[4] +
-    get_date.value[5] +
-    get_date.value[6] +
-    get_date.value[7] +
-    get_date.value[8];
-}
-
-const base_time = ref("0500");
-const nx = ref("98");
-const ny = ref("75");
-const weather = ref({});
-
-axios.defaults.paramsSerializer = (params) => {
-  return qs.stringify(params);
-};
-const getWeather = () => {
-  axios
-    .get(url_base, {
-      params: {
-        serviceKey: api_key,
-        pageNo: pageNo.value,
-        numOfRows: numOfRows.value,
-        dataType: dataType.value,
-        base_date: base_date.value,
-        base_time: base_time.value,
-        nx: nx.value,
-        ny: ny.value,
-      },
-    })
-    .then(function (response) {
-      weather.value = response;
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .finally(function () {});
-};
-onMounted(() => {
-  getWeather();
-});
 </script>
 
-<style scoped>
-.weather-container:hover
-  .weather-header-border
-  .right-scroll-label
-  .right-scroll-img {
-  visibility: visible;
-}
-
-.weather-container:hover
-  .weather-header-border
-  .left-scroll-label
-  .left-scroll-img {
-  visibility: visible;
-}
-.leftMove {
-  display: none;
-}
-.rightMove {
-  display: none;
-}
-
-.left-scroll-img {
-  visibility: hidden;
-}
-
-.left-scroll-label {
-  display: inline-block;
-  width: 25px;
+<style>
+.asd {
+  width: 70px;
   height: 50px;
-  position: relative;
-  top: 60px;
-  left: -473px;
+  background-color: aqua;
 }
+</style> -->
 
-.right-scroll-img {
-  visibility: hidden;
-}
-.right-scroll-label {
-  display: inline-block;
-  width: 25px;
-  height: 50px;
-  position: relative;
-  top: 60px;
-  left: 473px;
-}
+<template>
+  <div>
+    <label for="sidebar-hide" class="sidebar-hide-label">
+      <img
+        class="sidebar-hide-img"
+        src="/img/sidebar_hide.png"
+        width="25"
+        height="17"
+      />
+    </label>
+    <button
+      id="sidebar-hide"
+      class="sidebar-hide-button"
+      @click="sidebarHide()"
+    ></button>
+  </div>
 
-.weather-header-border {
-  width: 945px;
-  height: 35px;
-  background: rgba(66, 113, 173, 0.8);
-  border-radius: 13px 13px 0px 0px;
-  top: 0px;
-  position: sticky;
-  z-index: 100;
-}
+  <vue-resizable
+    class="sidebar"
+    :active="['r']"
+    :width="200"
+    :min-width="140"
+    :max-width="290"
+    :style="{
+      transform: isHide ? '' : 'translateX(-300px)',
+      height: '100vh',
+      position: 'relative',
+    }"
+  >
+    <div :ref="getWidth()" @click="updateWidth()">
+      <br />
 
-.wall-clock-img {
-  position: relative;
-  top: 3px;
-}
-.weather-header {
-  text-align: left;
-  position: relative;
-  top: 5px;
-  margin-left: 10px;
-  color: rgb(165, 170, 185);
-  font-size: 12px;
-}
+      <br />
+      <br />
+      <div v-for="index in 1" :key="index" class="sidebar-components">
+        <button class="sidebar-border">
+          <div class="location">부산광역시</div>
+          <div class="current-time">{{ currentTime }}</div>
+          <div class="current-weather">{{ props.currentWeather }}</div>
+          <div class="current-temperature">{{ props.currentTemperature }}</div>
+          <div class="mx-mn-temperature">
+            최고:{{ props.mxTemperature }}° 최저:{{ props.mnTemperature }}°
+          </div>
+        </button>
+        <div class="divider"></div>
+      </div>
+      <br />
+    </div>
+  </vue-resizable>
+</template>
+<script setup>
+let asdWidth = 0;
+let getRef = {};
 
-.weather-body-border {
-  width: 945px;
-  height: 110px;
-  background: rgba(66, 113, 173, 0.8);
-  border-radius: 0px 0px 13px 13px;
-  overflow-x: scroll;
-  overflow-y: scroll;
-  white-space: nowrap;
-  position: relative;
-  top: -1px;
-}
-@media screen and (max-width: 1200px) {
-  .weather-body-border,
-  .weather-header-border {
-    width: 625px;
+const updateWidth = () => {
+  const asdElement = getRef;
+  asdWidth = asdElement.offsetWidth;
+  console.log(getRef);
+  console.log(asdWidth);
+};
+
+const getWidth = () => {
+  return (el) => {
+    getRef = el;
+    console.log(el);
+  };
+};
+
+import { defineProps, onMounted, ref } from "vue";
+import VueResizable from "vue-resizable";
+let isHide = ref(true);
+const sidebarHide = () => {
+  if (isHide.value == true) {
+    isHide.value = false;
+  } else {
+    isHide.value = true;
   }
-  .left-scroll-img {
-    position: relative;
-  }
-  .right-scroll-img {
-    position: relative;
-  }
-  .left-scroll-label {
-    display: inline-block;
-    width: 25px;
-    height: 50px;
-    position: relative;
-    top: 60px;
-    left: -312px;
-  }
-  .right-scroll-label {
-    display: inline-block;
-    width: 25px;
-    height: 50px;
-    position: relative;
-    top: 60px;
-    left: 312px;
-  }
+};
+var date = new Date();
+const hours = date.getHours();
+const minutes = date.getMinutes();
+
+const currentTime = ref("");
+if (hours < 12) {
+  currentTime.value = "오전 " + hours + ":";
+} else if (hours === 12) {
+  currentTime.value = "오후 " + hours + ":";
+} else {
+  currentTime.value = "오후 " + (hours - 12) + ":";
 }
 
-.weather-body-border::-webkit-scrollbar {
-  display: none;
+if (minutes < 10) {
+  currentTime.value = currentTime.value + "0" + minutes;
+} else {
+  currentTime.value = currentTime.value + minutes;
 }
 
-.weather-body {
-  display: inline-block;
+const props = defineProps({
+  currentWeather: String,
+  currentTemperature: String,
+  mxTemperature: String,
+  mnTemperature: String,
+});
+
+onMounted(() => {});
+const isClicked = ref(false);
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".sidebar-border")) {
+    isClicked.value = true;
+  }
+});
+document.addEventListener("mousedown", (event) => {
+  if (event.target.closest(".sidebar-border")) {
+    isClicked.value = true;
+  }
+});
+</script>
+<style>
+.sidebar {
+  /* width: 200px; */
+  /* height: 100vh; */
+  border-radius: 13px 0px 0px 13px;
+  background: rgb(66, 113, 173);
+  position: relative;
+  transition: 0.2s ease-in;
+}
+.location {
   color: white;
-  position: relative;
-  top: 10px;
-}
-
-.weather-img {
-  position: relative;
-  left: -45px;
-}
-
-.time-font {
-  height: 22px;
-  width: 63px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
+  grid-area: location;
+  display: flex;
+}
+.current-time {
+  grid-area: time;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(147, 185, 244);
+  display: flex;
+}
+.current-weather {
+  grid-area: weather;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(141, 174, 200);
+  display: flex;
+}
+.current-temperature {
+  grid-area: temperature;
+  font-size: 28px;
+  font-weight: 500;
+  color: rgb(147, 185, 244);
+  display: flex;
+  justify-content: end;
+}
+.mx-mn-temperature {
+  grid-area: mx-mn;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(141, 174, 200);
+  display: flex;
+  justify-content: end;
 }
 .divider {
   height: 1px;
-  width: 932px;
+  width: 92%;
   background-color: rgb(137, 179, 234);
-  position: relative;
   box-shadow: 0px;
-  left: 10px;
-  top: -5px;
-  z-index: 1000;
-}
-@media screen and (max-width: 1200px) {
-  .divider {
-    width: 612px;
-  }
-}
-.probability-font {
-  color: rgb(119, 197, 241);
-  font-size: 11px;
-  font-weight: 900;
-}
-.temperature-font {
-  font-weight: 700;
-  font-size: 15px;
-}
-.sunny-img {
   position: relative;
-  left: 3px;
-  top: -9px;
+  top: 0px;
+  margin-left: 3px;
 }
-.moon-img {
-  position: relative;
-  left: 4px;
-  top: -11px;
+.sidebar-border {
+  display: grid;
+  border-radius: 5px;
+  width: 95%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  justify-content: space-between;
+  grid-template-columns: repeat(2, 1px);
+  grid-template-rows: 16px 23px 19px;
+  grid-template-areas:
+    "location temperature"
+    "time     temperature"
+    "weather  mx-mn";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sidebar-border:focus {
+  background-color: rgb(130, 154, 186);
+}
+.sidebar-border:focus .current-time {
+  color: rgb(214, 239, 255);
+}
+.sidebar-border:focus .current-temperature {
+  color: rgb(214, 239, 255);
+}
+.sidebar-border:focus .mx-mn-temperature {
+  color: rgb(180, 204, 236);
+}
+.sidebar-border:focus .current-weather {
+  color: rgb(180, 204, 236);
+}
+.sidebar-hide-label {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  z-index: 100;
+  left: 90px;
+  top: 20px;
+}
+.sidebar-hide-label:hover .sidebar-hide-img {
+  outline: 6px solid rgba(53, 95, 156, 1);
+  border-radius: 1px;
+}
+
+.sidebar-hide-img {
+  vertical-align: middle;
+}
+
+.sidebar-hide-button {
+  display: none;
+}
+.sidebar-components {
+  margin-left: 12px;
 }
 </style>
