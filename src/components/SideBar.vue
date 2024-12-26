@@ -27,7 +27,7 @@
       position: 'relative',
     }"
   >
-    <div>
+    <div :ref="getWidth()" @click="updateWidth()">
       <br />
 
       <br />
@@ -49,8 +49,31 @@
   </vue-resizable>
 </template>
 <script setup>
-import { defineProps, onMounted, ref } from "vue";
+let sidebarWidth = ref(0);
+let getRef = {};
+
+const updateWidth = () => {
+  const asdElement = getRef;
+  sidebarWidth.value = asdElement.offsetWidth;
+  console.log(getRef);
+  console.log(sidebarWidth.value);
+  emitSidebarWidth(sidebarWidth.value);
+};
+
+const getWidth = () => {
+  return (el) => {
+    getRef = el;
+    console.log(el);
+  };
+};
+
+import { defineProps, defineEmits, onMounted, ref } from "vue";
 import VueResizable from "vue-resizable";
+const emit = defineEmits(["sidebarWidth"]);
+const emitSidebarWidth = (index) => {
+  emit("sidebarWidth", index);
+};
+
 let isHide = ref(true);
 const sidebarHide = () => {
   if (isHide.value == true) {

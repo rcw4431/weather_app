@@ -16,7 +16,7 @@
       <div class="flex-container">
         <div>3일 최고 평균</div>
         <div v-if="tmpAvg % 1 != 0" class="tmpAvg">
-          최고: {{ tmpAvg.toFixed(1) }}°
+          최고: {{ (tmpAvg * 1).toFixed(1) }}°
         </div>
         <div v-else>최고:{{ tmpAvg * 1 }}°</div>
       </div>
