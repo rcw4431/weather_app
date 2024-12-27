@@ -50,6 +50,7 @@
 </template>
 <script setup>
 let sidebarWidth = ref(0);
+let searchPosition = ref(0);
 let getRef = {};
 
 const updateWidth = () => {
@@ -57,11 +58,16 @@ const updateWidth = () => {
 
   if (isHide.value == true) {
     sidebarWidth.value = sidebarElement.offsetWidth * 2;
+    searchPosition.value = sidebarElement.offsetWidth;
+    emitSidebarWidth(sidebarWidth.value);
+    emitSearchPosition(searchPosition.value);
   } else {
     sidebarWidth.value = sidebarElement.offsetWidth;
+    searchPosition.value = sidebarElement.offsetWidth;
+    emitSidebarWidth(sidebarWidth.value);
+    emitSearchPosition(searchPosition.value);
   }
   console.log(sidebarElement.offsetWidth);
-  emitSidebarWidth(sidebarWidth.value);
 };
 
 const getWidth = () => {
@@ -73,9 +79,12 @@ const getWidth = () => {
 
 import { defineProps, defineEmits, onMounted, ref } from "vue";
 import VueResizable from "vue-resizable";
-const emit = defineEmits(["sidebarWidth"]);
+const emit = defineEmits(["sidebarWidth", "searchPosition"]);
 const emitSidebarWidth = (index) => {
   emit("sidebarWidth", index);
+};
+const emitSearchPosition = (index) => {
+  emit("searchPosition", index);
 };
 
 let isHide = ref(false);

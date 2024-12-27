@@ -27,12 +27,13 @@
       :mxTemperature="mxTemperature"
       :mnTemperature="mnTemperature"
       @sidebarWidth="sidebarWidthValue"
+      @searchPosition="searchPositionValue"
     >
     </SideBar>
     <div class="main-page">
       <div
         class="search-container"
-        :style="{ right: sidebarWidth - 200 + 'px' }"
+        :style="{ right: searchPosition - 200 + 'px' }"
       >
         <div
           class="search-border"
@@ -124,10 +125,13 @@ import WindInfo from "./WindInfo.vue";
 import TemperatureAverage from "./TemperatureAverage.vue";
 import SideBar from "./SideBar.vue";
 import { ref, onMounted } from "vue";
-
 const sidebarWidth = ref(0);
+const searchPosition = ref(0);
 const sidebarWidthValue = (index) => {
   sidebarWidth.value = index;
+};
+const searchPositionValue = (index) => {
+  searchPosition.value = index;
 };
 const currentWeather = ref("");
 const currentWeatherImg = ref("");
