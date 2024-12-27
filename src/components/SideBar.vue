@@ -22,14 +22,14 @@
     :min-width="140"
     :max-width="290"
     :style="{
-      transform: isHide ? '' : 'translateX(-300px)',
+      transform: isHide ? 'translateX(-300px)' : '',
       height: '100vh',
       position: 'relative',
     }"
   >
     <div :ref="getWidth()" @click="updateWidth()">
+      {{ updateWidth() }}
       <br />
-
       <br />
       <br />
       <div v-for="index in 1" :key="index" class="sidebar-components">
@@ -53,10 +53,14 @@ let sidebarWidth = ref(0);
 let getRef = {};
 
 const updateWidth = () => {
-  const asdElement = getRef;
-  sidebarWidth.value = asdElement.offsetWidth;
-  console.log(getRef);
-  console.log(sidebarWidth.value);
+  const sidebarElement = getRef;
+
+  if (isHide.value == true) {
+    sidebarWidth.value = sidebarElement.offsetWidth * 2;
+  } else {
+    sidebarWidth.value = sidebarElement.offsetWidth;
+  }
+  console.log(sidebarElement.offsetWidth);
   emitSidebarWidth(sidebarWidth.value);
 };
 
@@ -74,7 +78,7 @@ const emitSidebarWidth = (index) => {
   emit("sidebarWidth", index);
 };
 
-let isHide = ref(true);
+let isHide = ref(false);
 const sidebarHide = () => {
   if (isHide.value == true) {
     isHide.value = false;

@@ -124,6 +124,7 @@ import WindInfo from "./WindInfo.vue";
 import TemperatureAverage from "./TemperatureAverage.vue";
 import SideBar from "./SideBar.vue";
 import { ref, onMounted } from "vue";
+
 const sidebarWidth = ref(0);
 const sidebarWidthValue = (index) => {
   sidebarWidth.value = index;
@@ -278,7 +279,7 @@ document.addEventListener("click", (event) => {
   display: inline-block;
   position: relative;
   justify-items: center;
-  left: 200px;
+  left: 208px;
 }
 .main-page-components {
   display: grid;
