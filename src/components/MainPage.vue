@@ -63,7 +63,7 @@
         class="main-page-info"
         :style="{ right: (sidebarWidth - 200) / 2 + 'px' }"
       >
-        <p class="main-page-location">부산광역시{{ sidebarWidth }}</p>
+        <p class="main-page-location">부산광역시</p>
         <br />
         <p class="main-page-temperature">{{ currentTemperature }}&nbsp;</p>
         <br />

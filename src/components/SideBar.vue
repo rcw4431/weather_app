@@ -73,7 +73,6 @@ const updateWidth = () => {
 const getWidth = () => {
   return (el) => {
     getRef = el;
-    console.log(el);
   };
 };
 
@@ -142,6 +141,7 @@ document.addEventListener("mousedown", (event) => {
   background: rgb(66, 113, 173);
   position: relative;
   transition: 0.2s ease-in;
+  transition-property: transform;
 }
 .location {
   color: white;
