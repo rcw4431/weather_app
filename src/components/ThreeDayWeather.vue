@@ -171,7 +171,6 @@ const getWeather = () => {
           weather.value?.data?.response?.body?.items?.item[i]?.category ===
           "TMN"
         ) {
-          //배열 1,2는 넣음
           mnTmpArr.value[(i - 11) / 290] =
             Math.round(
               weather.value?.data?.response?.body?.items?.item[i]?.fcstValue *
