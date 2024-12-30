@@ -30,244 +30,13 @@
             width="130"
             height="130"
           />
-          <div
-            v-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '북'
-            "
-          >
+          <div>
             <img
               class="arrow-img"
               src="/img/arrow.png"
               width="100"
               height="40"
-              style="transform: rotate(90deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '북북동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(112.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '북동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(135deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '동북동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(157.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(180deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '동남동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(202.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '남동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(225deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '남남동'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(247.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '남'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(270deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '남남서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(292.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '남서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(315deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '서남서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(337.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(360deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '서북서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(22.5deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '북서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(45deg)"
-            />
-          </div>
-          <div
-            v-else-if="
-              windDirectionCal(
-                weather?.data?.response?.body?.items?.item[index]?.fcstValue
-              ) === '북북서'
-            "
-          >
-            <img
-              class="arrow-img"
-              src="/img/arrow.png"
-              width="100"
-              height="40"
-              style="transform: rotate(77.5deg)"
+              :style="style"
             />
           </div>
         </div>
@@ -289,41 +58,6 @@
             </div>
           </div>
         </div>
-        <!-- <div
-          v-else-if="
-            weather.response?.body?.items?.item[index]?.fcstTime ==
-              currentHour &&
-            weather.response?.body?.items?.item[index]?.category === 'UUU'
-          "
-        >
-          <div class="grid-container">
-            <div class="wind-value-font">
-              {{ weather.response?.body?.items?.item[index]?.fcstValue }}
-            </div>
-
-            <div class="ms-font">m/s</div>
-            <br />
-            <div class="wind-direction-font">동서성분 바람</div>
-          </div>
-        </div>
-
-        <div
-          v-else-if="
-            weather.response?.body?.items?.item[index]?.fcstTime ==
-              currentHour &&
-            weather.response?.body?.items?.item[index]?.category === 'VVV'
-          "
-        >
-          <div class="grid-container">
-            <div class="wind-value-font">
-              {{ weather.response?.body?.items?.item[index]?.fcstValue }}
-            </div>
-
-            <div class="ms-font">m/s</div>
-            <br />
-            <div class="wind-direction-font">남북성분 바람</div>
-          </div>
-        </div> -->
       </span>
     </div>
   </div>
@@ -331,11 +65,14 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+
 import axios from "axios";
 import qs from "qs";
 const date = new Date();
 const currentHour = date.getHours() * 100;
 const windDirection = ref();
+const style = ref({});
+const deg = ref(0);
 
 const azimuth = [
   "북",
@@ -409,6 +146,7 @@ const weather = ref({});
 axios.defaults.paramsSerializer = (params) => {
   return qs.stringify(params);
 };
+
 const getWeather = () => {
   axios
     .get(url_base, {
@@ -425,6 +163,19 @@ const getWeather = () => {
     })
     .then(function (response) {
       weather.value = response;
+      for (let i = 0; i < 217; i++) {
+        if (
+          weather.value?.data?.response?.body?.items?.item[i]?.category ==
+            "VEC" &&
+          weather.value?.data?.response?.body?.items?.item[i]?.fcstTime ==
+            currentHour
+        ) {
+          deg.value =
+            weather.value?.data?.response?.body?.items?.item[i]?.fcstValue;
+          console.log(deg.value);
+          style.value.transform = `rotate(${Number(deg.value) + 90}deg)`;
+        }
+      }
     })
     .catch(function (error) {
       console.log(error);
