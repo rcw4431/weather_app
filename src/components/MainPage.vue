@@ -275,6 +275,7 @@ document.addEventListener("click", (event) => {
   overflow-y: scroll;
   white-space: nowrap;
   position: relative;
+  transition: 0.2s;
 }
 .main-page {
   /* width: calc(100vw - 200px); */
@@ -421,6 +422,7 @@ document.addEventListener("click", (event) => {
   color: white;
   position: relative;
   height: 200px;
+  transition: 0.2s;
 }
 .main-page-location {
   font-size: 35px;

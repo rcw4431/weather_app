@@ -139,7 +139,7 @@ document.addEventListener("mousedown", (event) => {
   border-radius: 13px 0px 0px 13px;
   background: rgb(66, 113, 173);
   position: relative;
-  transition: 0.2s ease-in;
+  transition: 0.5s;
   transition-property: transform;
 }
 .location {
