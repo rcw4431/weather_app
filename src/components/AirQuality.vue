@@ -28,7 +28,7 @@
 <script setup>
 import { ref } from "vue";
 
-const airqualityValue = ref(70);
+const airqualityValue = ref(100);
 const dotPosition = ref("");
 const moveDot = (airqualityValue) => {
   dotPosition.value = (airqualityValue * 0.56).toString();

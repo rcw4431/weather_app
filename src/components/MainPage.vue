@@ -26,10 +26,15 @@
       :currentTemperature="currentTemperature"
       :mxTemperature="mxTemperature"
       :mnTemperature="mnTemperature"
+      @sidebarWidth="sidebarWidthValue"
+      @searchPosition="searchPositionValue"
     >
     </SideBar>
     <div class="main-page">
-      <div class="search-container">
+      <div
+        class="search-container"
+        :style="{ right: searchPosition - 200 + 'px' }"
+      >
         <div
           class="search-border"
           :style="{
@@ -54,7 +59,10 @@
         </div>
       </div>
       <!--  -->
-      <div class="main-page-info">
+      <div
+        class="main-page-info"
+        :style="{ right: (sidebarWidth - 200) / 2 + 'px' }"
+      >
         <p class="main-page-location">부산광역시</p>
         <br />
         <p class="main-page-temperature">{{ currentTemperature }}&nbsp;</p>
@@ -65,7 +73,10 @@
           최고:{{ mxTemperature }}° 최저:{{ mnTemperature }}°
         </p>
       </div>
-      <div class="scroll-container">
+      <div
+        class="scroll-container"
+        :style="{ right: (sidebarWidth - 200) / 2 + 'px' }"
+      >
         <div class="main-page-components">
           <TodayWeather
             class="today"
@@ -114,7 +125,14 @@ import WindInfo from "./WindInfo.vue";
 import TemperatureAverage from "./TemperatureAverage.vue";
 import SideBar from "./SideBar.vue";
 import { ref, onMounted } from "vue";
-
+const sidebarWidth = ref(0);
+const searchPosition = ref(0);
+const sidebarWidthValue = (index) => {
+  sidebarWidth.value = index;
+};
+const searchPositionValue = (index) => {
+  searchPosition.value = index;
+};
 const currentWeather = ref("");
 const currentWeatherImg = ref("");
 const currentTemperature = ref("");
@@ -265,7 +283,7 @@ document.addEventListener("click", (event) => {
   display: inline-block;
   position: relative;
   justify-items: center;
-  left: 200px;
+  left: 208px;
 }
 .main-page-components {
   display: grid;

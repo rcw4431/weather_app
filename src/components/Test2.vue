@@ -1,189 +1,213 @@
 <template>
-  <div class="temperature-average-border">
-    <div class="temperature-average-header">
-      <img src="/img/graph.png" width="15" height="15" /> &nbsp; 평균
-    </div>
-    <div class="temperature-average-body">
-      <div class="">{{ threeDayMxTmp - todayMxTmp }}°</div>
-      <div class="avg-info">일일 평균 최고 기온과의 <br />차이</div>
-      <div class="flex-container">
-        <div>오늘</div>
-        <div class="todayMxTmp">최고:{{ todayMxTmp }}°</div>
-      </div>
-      <div class="flex-container">
-        <div>3일</div>
-        <div class="threeDayMxTmp">최고:{{ threeDayMxTmp }}°</div>
-      </div>
-    </div>
+  <div>
+    <label for="sidebar-hide" class="sidebar-hide-label">
+      <img
+        class="sidebar-hide-img"
+        src="/img/sidebar_hide.png"
+        width="25"
+        height="17"
+      />
+    </label>
+    <button
+      id="sidebar-hide"
+      class="sidebar-hide-button"
+      @click="sidebarHide()"
+    ></button>
   </div>
+
+  <vue-resizable
+    class="sidebar"
+    :active="['r']"
+    :width="200"
+    :min-width="140"
+    :max-width="290"
+    :style="{
+      transform: isHide ? '' : 'translateX(-300px)',
+      height: '100vh',
+      position: 'relative',
+    }"
+  >
+    <div>
+      <br />
+
+      <br />
+      <br />
+      <div v-for="index in 1" :key="index" class="sidebar-components">
+        <button class="sidebar-border">
+          <div class="location">부산광역시</div>
+          <div class="current-time">{{ currentTime }}</div>
+          <div class="current-weather">{{ props.currentWeather }}</div>
+          <div class="current-temperature">{{ props.currentTemperature }}</div>
+          <div class="mx-mn-temperature">
+            최고:{{ props.mxTemperature }}° 최저:{{ props.mnTemperature }}°
+          </div>
+        </button>
+        <div class="divider"></div>
+      </div>
+      <br />
+    </div>
+  </vue-resizable>
 </template>
-
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
-import qs from "qs";
-const date = new Date();
-let toDaytmpAvg = ref(0);
-const threeDaytmpAvg = ref(0);
-let todayMxTmp = ref(-100);
-let threeDayMxTmp = ref(-100);
-const api_key =
-  "8IIlgnCcJu4CZutrxEKuNB0HgYB/RMDab5SZqpKl5lnn8Xary99mNeuMcxZZOUWlQ4o1RCbAwGEoPTCHdGNRTw==";
-const url_base =
-  "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-const pageNo = ref("1");
-const numOfRows = ref("1000");
-const dataType = ref("JSON");
+import { defineProps, onMounted, ref } from "vue";
+import VueResizable from "vue-resizable";
+let isHide = ref(true);
+const sidebarHide = () => {
+  if (isHide.value == true) {
+    isHide.value = false;
+  } else {
+    isHide.value = true;
+  }
+};
+var date = new Date();
+const hours = date.getHours();
+const minutes = date.getMinutes();
 
-const get_date = ref(
-  JSON.stringify(`${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`)
-);
-
-const base_date = ref();
-
-if (date.getDate() / 10 < 1) {
-  base_date.value =
-    get_date.value[1] +
-    get_date.value[2] +
-    get_date.value[3] +
-    get_date.value[4] +
-    get_date.value[5] +
-    get_date.value[6] +
-    "0" +
-    get_date.value[7];
+const currentTime = ref("");
+if (hours < 12) {
+  currentTime.value = "오전 " + hours + ":";
+} else if (hours === 12) {
+  currentTime.value = "오후 " + hours + ":";
 } else {
-  base_date.value =
-    get_date.value[1] +
-    get_date.value[2] +
-    get_date.value[3] +
-    get_date.value[4] +
-    get_date.value[5] +
-    get_date.value[6] +
-    get_date.value[7] +
-    get_date.value[8];
+  currentTime.value = "오후 " + (hours - 12) + ":";
 }
-const base_time = ref("0500");
-const nx = ref("98");
-const ny = ref("75");
-const weather = ref({});
 
-axios.defaults.paramsSerializer = (params) => {
-  return qs.stringify(params);
-};
-const getWeather = () => {
-  axios
-    .get(url_base, {
-      params: {
-        serviceKey: api_key,
-        pageNo: pageNo.value,
-        numOfRows: numOfRows.value,
-        dataType: dataType.value,
-        base_date: base_date.value,
-        base_time: base_time.value,
-        nx: nx.value,
-        ny: ny.value,
-      },
-    })
-    .then(function (response) {
-      weather.value = response;
+if (minutes < 10) {
+  currentTime.value = currentTime.value + "0" + minutes;
+} else {
+  currentTime.value = currentTime.value + minutes;
+}
 
-      for (let i = 0; i < 217; i++) {
-        if (
-          weather.value?.data?.response?.body?.items?.item[i]?.category ===
-          "TMP"
-        ) {
-          toDaytmpAvg.value =
-            toDaytmpAvg.value +
-            Number(
-              weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-            );
-        }
-        if (
-          weather.value?.data?.response?.body?.items?.item[i]?.category ===
-            "TMP" &&
-          Number(
-            weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-          ) > todayMxTmp.value
-        ) {
-          todayMxTmp.value = Number(
-            weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-          );
-        }
-      }
-      toDaytmpAvg.value = Math.round((toDaytmpAvg.value / 19) * 10) / 10;
-      for (let i = 0; i < 797; i++) {
-        if (
-          weather.value?.data?.response?.body?.items?.item[i]?.category ===
-          "TMP"
-        ) {
-          threeDaytmpAvg.value =
-            threeDaytmpAvg.value +
-            Number(
-              weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-            );
-        }
-        if (
-          weather.value?.data?.response?.body?.items?.item[i]?.category ===
-            "TMP" &&
-          Number(
-            weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-          ) > threeDayMxTmp.value
-        ) {
-          threeDayMxTmp.value = Number(
-            weather.value?.data?.response?.body?.items?.item[i]?.fcstValue
-          );
-        }
-      }
-      threeDaytmpAvg.value = Math.round((threeDaytmpAvg.value / 66) * 10) / 10;
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .finally(function () {});
-};
-
-onMounted(() => {
-  getWeather();
+const props = defineProps({
+  currentWeather: String,
+  currentTemperature: String,
+  mxTemperature: String,
+  mnTemperature: String,
 });
+
+onMounted(() => {});
+const isClicked = ref(false);
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".sidebar-border")) {
+    isClicked.value = true;
+  }
+});
+document.addEventListener("mousedown", (event) => {
+  if (event.target.closest(".sidebar-border")) {
+    isClicked.value = true;
+  }
+});
+console.log();
 </script>
-
-<style scoped>
-.temperature-average-border {
-  width: 145px;
-  height: 145px;
-
-  background: rgba(66, 113, 173, 0.8);
-  border-radius: 13px;
+<style>
+.sidebar {
+  /* width: 200px; */
+  /* height: 100vh; */
+  border-radius: 13px 0px 0px 13px;
+  background: rgb(66, 113, 173);
+  position: relative;
+  transition: 0.2s ease-in;
 }
-
-.temperature-average-header {
-  text-align: left;
-  margin-left: 10px;
-  margin-top: 10px;
-  color: rgb(165, 170, 185);
-  font-size: 12px;
-  display: flex;
-}
-
-.temperature-average-body {
+.location {
   color: white;
-  font-size: 24px;
-  text-align: left;
-  margin-left: 10px;
-}
-.threeDayMxTmp {
-}
-.todayMxTmp {
-  font-size: 11px;
-}
-.avg-info {
-  font-size: 12px;
-  font-weight: 600;
-}
-.flex-container {
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  grid-area: location;
   display: flex;
+}
+.current-time {
+  grid-area: time;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(147, 185, 244);
+  display: flex;
+}
+.current-weather {
+  grid-area: weather;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(141, 174, 200);
+  display: flex;
+}
+.current-temperature {
+  grid-area: temperature;
+  font-size: 28px;
+  font-weight: 500;
+  color: rgb(147, 185, 244);
+  display: flex;
+  justify-content: end;
+}
+.mx-mn-temperature {
+  grid-area: mx-mn;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(141, 174, 200);
+  display: flex;
+  justify-content: end;
+}
+.divider {
+  height: 1px;
+  width: 92%;
+  background-color: rgb(137, 179, 234);
+  box-shadow: 0px;
+  position: relative;
+  top: 0px;
+  margin-left: 3px;
+}
+.sidebar-border {
+  display: grid;
+  border-radius: 5px;
+  width: 95%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
   justify-content: space-between;
-  margin-right: 5px;
+  grid-template-columns: repeat(2, 1px);
+  grid-template-rows: 16px 23px 19px;
+  grid-template-areas:
+    "location temperature"
+    "time     temperature"
+    "weather  mx-mn";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sidebar-border:focus {
+  background-color: rgb(130, 154, 186);
+}
+.sidebar-border:focus .current-time {
+  color: rgb(214, 239, 255);
+}
+.sidebar-border:focus .current-temperature {
+  color: rgb(214, 239, 255);
+}
+.sidebar-border:focus .mx-mn-temperature {
+  color: rgb(180, 204, 236);
+}
+.sidebar-border:focus .current-weather {
+  color: rgb(180, 204, 236);
+}
+.sidebar-hide-label {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  z-index: 100;
+  left: 90px;
+  top: 20px;
+}
+.sidebar-hide-label:hover .sidebar-hide-img {
+  outline: 6px solid rgba(53, 95, 156, 1);
+  border-radius: 1px;
+}
+
+.sidebar-hide-img {
+  vertical-align: middle;
+}
+
+.sidebar-hide-button {
+  display: none;
+}
+.sidebar-components {
+  margin-left: 12px;
 }
 </style>
