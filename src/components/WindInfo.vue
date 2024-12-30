@@ -95,14 +95,9 @@ const azimuth = [
 ];
 
 const windDirectionCal = (deg) => {
-  windDirection.value = Math.floor((Number(deg) + 22.5 * 0.5) / 22.5);
-  // arrow-img.style.transform = rotateDeg(azimuth[windDirection.value]*22.5);
+  windDirection.value = Math.round(Number(deg) / 22.5);
   return azimuth[windDirection.value];
 };
-// console.log(windDirection.value);
-// const rotateDeg = () => {
-//   return windDirection.value * 22.5;
-// };
 
 const api_key =
   "8IIlgnCcJu4CZutrxEKuNB0HgYB/RMDab5SZqpKl5lnn8Xary99mNeuMcxZZOUWlQ4o1RCbAwGEoPTCHdGNRTw==";
@@ -172,7 +167,7 @@ const getWeather = () => {
         ) {
           deg.value =
             weather.value?.data?.response?.body?.items?.item[i]?.fcstValue;
-          console.log(deg.value);
+
           style.value.transform = `rotate(${Number(deg.value) + 90}deg)`;
         }
       }

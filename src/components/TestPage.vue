@@ -6,7 +6,6 @@
 import { ref } from "vue";
 
 const style = ref({});
-console.log(style.value);
 const deg = ref(360);
 function mouseDown() {
   style.value.transform = `rotate(${deg.value}deg)`;

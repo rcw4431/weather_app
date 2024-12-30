@@ -67,7 +67,6 @@ const updateWidth = () => {
     emitSidebarWidth(sidebarWidth.value);
     emitSearchPosition(searchPosition.value);
   }
-  console.log(sidebarElement.offsetWidth);
 };
 
 const getWidth = () => {

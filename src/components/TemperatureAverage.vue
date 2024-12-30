@@ -150,8 +150,7 @@ const getWeather = () => {
   text-align: left;
   margin-left: 10px;
 }
-.mxTmpArr {
-}
+
 .tmpAvg {
   font-size: 11px;
 }
