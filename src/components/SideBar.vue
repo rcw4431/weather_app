@@ -69,7 +69,6 @@ const updateWidth = () => {
   }
   console.log(sidebarElement.offsetWidth);
 };
-
 const getWidth = () => {
   return (el) => {
     getRef = el;
